@@ -1,0 +1,27 @@
+{
+  "name": "murdoch",
+  "version": "0.0.0",
+  "description": "Visualizations reporting on rupert's work",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mpareja/node-murdoch.git"
+  },
+  "keywords": [
+    "rupert",
+    "monitoring",
+    "devops",
+    "deployment",
+    "visualizations",
+    "web"
+  ],
+  "author": {
+    "name": "Mario Pareja",
+    "email": "pareja.mario@gmail.com",
+    "url": "http://www.mariopareja.com/blog"
+  },
+  "license": "MIT"
+}

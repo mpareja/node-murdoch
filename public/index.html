@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Murdoch - Reporting on Rupert</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="lib/jquery-ui/css/smoothness/jquery-ui-1.10.2.custom.css" />
+		<link href="lib/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+		<style>
+		  /* Custom container */
+		  .container-narrow {
+			margin: 0 auto;
+			max-width: 700px;
+		  }
+		  .container-narrow > hr {
+			margin: 30px 0;
+		  }
+
+		  .progress-label {
+			float: left;
+			margin-left: 50%;
+			margin-top: 5px;
+			font-weight: bold;
+			text-shadow: 1px 1px 0 #fff;
+		  }
+		  
+		  .progress {
+			  position: relative;
+		  }
+		  #taskList {
+			  position: auto;
+		  }
+
+		  taskList .name {
+			  width: 100px;
+		  }
+		</style>
+	</head>
+	<body>
+<div class="container-narrow">
+		<ul id="taskList">
+		</ul>
+		<script id="taskTemplate" type="text/template">
+			<li id="<%=name%>">
+				<span class="span2 name"><%=name%></span>
+				<span class="span6 progress" />
+			</li>
+		</script>
+		<script src="lib/underscore.js"></script>
+		<script src="lib/jquery-ui/js/jquery-1.9.1.js"></script>
+		<script src="lib/bootstrap/js/bootstrap.min.js"></script>
+		<script src="lib/jquery-ui/js/jquery-ui-1.10.2.custom.js"></script>
+		<script src="client.js"></script>
+</div>
+	</body>
+</html>
