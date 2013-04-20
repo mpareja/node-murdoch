@@ -1,5 +1,4 @@
 var murdoch = (function ($) {
-  var completed = {};
   var taskTemplate = _.template($("#taskTemplate").html());
   var $taskList = $('#taskList')
 
@@ -21,23 +20,49 @@ var murdoch = (function ($) {
   };
   */
 
+  var _completed, _plan, _deps;
   var exports = {
     initialize: function (plan) {
+      _plan = plan;
+      _completed = {};
+      _deps = deppy.create();
+
+      // populate dependency graph
       Object.keys(plan).forEach(function (task) {
-        renderTask(task, plan[task]);
+        _deps(task, plan[task]);
       });
+
+      renderAll();
+    },
+    complete: function (task) {
+      _completed[task] = true;
+      renderAll();
     }
   };
 
+  function renderAll() {
+    $taskList.html('');
+
+    Object.keys(_plan).forEach(function (task) {
+      renderTask(task, _plan[task]);
+    });
+  }
+
   function renderTask(task, deps) {
+    var requiredTasks = _deps.resolve(task);
+    var completeCount = requiredTasks.filter(function (task) {
+      return !!_completed[task];
+    }).length * 1.0;
+
 //    var total = deps.length + 1;
-    var taskHtml = taskTemplate({name: camelToWords(task)});
+    var name = camelToWords(task);
+    var taskHtml = taskTemplate({name: name});
 
     $taskList.append(taskHtml);
 
     $('#taskList li :last .progress').progressbar({
-      label: task,
-      value: 75,
+      label: name,
+      value: 100.0 * (completeCount / requiredTasks.length * 1.0),
       change: function () {
         $('#taskList .progress-label').text(task);
       }
@@ -54,5 +79,12 @@ var murdoch = (function ($) {
 }(jQuery));
 
 $(function () {
-  murdoch.initialize({ "applyChangesToReporting": [] });
+  var socket = io.connect('http://localhost:8080');
+  socket.on('init', function (data) {
+    murdoch.initialize(data);
+  });
+
+  socket.on('complete', function (task) {
+    murdoch.complete(task);
+  });
 });

@@ -23,5 +23,9 @@
     "email": "pareja.mario@gmail.com",
     "url": "http://www.mariopareja.com/blog"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "socket.io": "~0.9.14",
+    "express": "~3.2.0"
+  }
 }
