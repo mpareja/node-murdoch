@@ -1,4 +1,4 @@
-var murdoch = (function ($) {
+jQuery(function ($) {
   var taskTemplate = _.template($("#taskTemplate").html());
   var $taskList = $('#taskList')
 
@@ -21,7 +21,7 @@ var murdoch = (function ($) {
   */
 
   var _completed, _plan, _deps;
-  var exports = {
+  window.murdoch = {
     initialize: function (plan) {
       _plan = plan;
       _completed = {};
@@ -41,32 +41,31 @@ var murdoch = (function ($) {
   };
 
   function renderAll() {
+    var tasks = Object.keys(_plan);
+    var tasksHtml = tasks.map(function (task) {
+      var name = camelToWords(task);
+      return taskTemplate({name: name});
+    }).join();
+
     $taskList.html('');
+    $taskList.append(tasksHtml);
 
-    Object.keys(_plan).forEach(function (task) {
-      renderTask(task, _plan[task]);
-    });
-  }
+    var els = $('#taskList li .progress');
+    for(var i = 0; i < els.length; i++) {
+      var task = tasks[i];
+      var requiredTasks = _deps.resolve(task);
+      var completeCount = requiredTasks.filter(function (task) {
+        return !!_completed[task];
+      }).length * 1.0;
 
-  function renderTask(task, deps) {
-    var requiredTasks = _deps.resolve(task);
-    var completeCount = requiredTasks.filter(function (task) {
-      return !!_completed[task];
-    }).length * 1.0;
-
-//    var total = deps.length + 1;
-    var name = camelToWords(task);
-    var taskHtml = taskTemplate({name: name});
-
-    $taskList.append(taskHtml);
-
-    $('#taskList li :last .progress').progressbar({
-      label: name,
-      value: 100.0 * (completeCount / requiredTasks.length * 1.0),
-      change: function () {
-        $('#taskList .progress-label').text(task);
-      }
-    });
+      $(els[i]).progressbar({
+        label: name,
+        value: 100.0 * (completeCount / requiredTasks.length * 1.0),
+        change: function () {
+          $('#taskList .progress-label').text(task);
+        }
+      });
+    }
   }
 
   function camelToWords(camel) {
@@ -74,9 +73,7 @@ var murdoch = (function ($) {
     var words = camel.replace(/([A-Z])/g, ' $1').substring(1).toLowerCase();
     return camel[0].toUpperCase() + words;
   }
-
-  return exports;
-}(jQuery));
+});
 
 $(function () {
   var socket = io.connect('http://localhost:8080');
