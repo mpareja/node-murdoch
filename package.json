@@ -26,6 +26,7 @@
   "license": "MIT",
   "dependencies": {
     "socket.io": "~0.9.14",
-    "express": "~3.2.0"
+    "express": "~3.2.0",
+    "rupert": "0.0.2-alpha"
   }
 }
