@@ -36,7 +36,8 @@
 		</style>
 	</head>
 	<body>
-<div class="container-narrow">
+
+	<div class="container-narrow">
 		<ul id="taskList">
 		</ul>
 		<script id="taskTemplate" type="text/template">
@@ -52,32 +53,7 @@
 		<script src="lib/deppy.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="client.js"></script>
-</div>
-
-
-<!-- Make sure to remove this in production -->
-<!-- include it above the </body> tag -->
-<script>
-var ws;
-function socket() {
-  ws = new WebSocket("ws://127.0.0.1:8081");
-  ws.onmessage = function ( e ) {
-    var data = JSON.parse(e.data);
-    if ( data.r ) {
-      location.reload();
-    }
-  };
-}
-setInterval(function () {
-  if ( ws ) {
-    if ( ws.readyState !== 1 ) {
-      socket();
-    }
-  } else {
-    socket();
-  }
-}, 1000);
-</script>
+	</div>
 
 	</body>
 </html>
