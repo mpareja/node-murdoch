@@ -2,28 +2,9 @@ jQuery(function ($) {
   var taskTemplate = _.template($("#taskTemplate").html());
   var $taskList = $('#taskList')
 
-  /*
-  function Emitter() {
-    this.handlers = {};
-  }
-  Emitter.prototype.emit = function (event, data) {
-    var handlers = this.handlers[event] || [];
-    if (this.handlers.length) {
-      handlers.forEach(function (handler) {
-        handler(data);
-      });
-    }
-  };
-  Emitter.prototype.on = function (event, handler) {
-    var handlers = this.handlers[event] || (this.handlers[event] = []);
-    handlers.push(handler);
-  };
-  */
-
-  var _completed, _plan, _deps;
+  var _completed, _deps, _tasks;
   window.murdoch = {
     initialize: function (plan) {
-      _plan = plan;
       _completed = {};
       _deps = deppy.create();
 
@@ -32,27 +13,37 @@ jQuery(function ($) {
         _deps(task, plan[task]);
       });
 
-      renderAll();
+      // TODO: a topological sort would be nice
+      _tasks = Object.keys(plan).sort(function (a, b) {
+        var ra = _deps.resolve(a).length;
+        var rb = _deps.resolve(b).length;
+        return ra === rb ? a.localeCompare(b) : ra - rb;
+      });
+
+      renderAllTasks();
+      updateProgress();
     },
     complete: function (task) {
       _completed[task] = true;
-      renderAll();
+      updateProgress();
     }
   };
 
-  function renderAll() {
-    var tasks = Object.keys(_plan);
-    var tasksHtml = tasks.map(function (task) {
+  function renderAllTasks() {
+    // render tasks
+    var tasksHtml = _tasks.map(function (task) {
       var name = camelToWords(task);
       return taskTemplate({name: name});
     }).join();
 
     $taskList.html('');
     $taskList.append(tasksHtml);
+  }
 
+  function updateProgress() {
     var els = $('#taskList li .progress');
     for(var i = 0; i < els.length; i++) {
-      var task = tasks[i];
+      var task = _tasks[i];
       var requiredTasks = _deps.resolve(task);
       var completeCount = requiredTasks.filter(function (task) {
         return !!_completed[task];
