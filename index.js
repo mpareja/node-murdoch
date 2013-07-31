@@ -1,19 +1,30 @@
-var shoe = require('shoe');
-var es = require('emit-stream');
-var socket = shoe(function (stream) {
-  var tp = getTaskPlan();
-  var r = rupert(tp.tasks, tp.plan, function (err) {});
-  es(r).pipe(stream);
-  r.emit('init', tp.plan);
-});
-
+// server static files
+var server = createStaticFileServer();
+pipeRupertEventsToBrowser(server);
 enableAutoBrowserify();
 
-var http = require('http');
-var ecstatic = require('ecstatic')(__dirname + '/public');
-var server = http.createServer(ecstatic);
-socket.install(server, '/stream');
-server.listen(8080);
+function createStaticFileServer() {
+  var http = require('http');
+  var ecstatic = require('ecstatic')(__dirname + '/public');
+  var server = http.createServer(ecstatic);
+  server.listen(8080);
+  return server;
+}
+
+function pipeRupertEventsToBrowser(server) {
+  var rupert = require('rupert');
+  var es = require('emit-stream');
+  var JSONStream = require('JSONStream');
+  var shoe = require('shoe');
+  var socket = shoe(function (stream) {
+    var tp = getTaskPlan();
+    var r = rupert(tp.tasks, tp.plan, function (err) {});
+    es(r).pipe(JSONStream.stringify()).pipe(stream);
+    r.emit('init', tp.plan);
+  });
+  socket.install(server, '/stream');
+}
+
 
 function getTaskPlan() {
   var tasks = {};

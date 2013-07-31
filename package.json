@@ -25,8 +25,13 @@
   },
   "license": "MIT",
   "dependencies": {
-    "socket.io": "~0.9.14",
-    "express": "~3.2.0",
-    "rupert": "0.0.2-alpha"
+    "browserify": ">=2.25 <3",
+    "deppy": ">=0.0.1 <1",
+    "emit-stream": ">=0.1 <1",
+    "ecstatic": ">=0.4.5 <1",
+    "JSONStream": ">=0.6.4 <1",
+    "rupert": ">=0.0 <1",
+    "shoe": ">=0.0.11 <1",
+    "watchify": ">=0.1 <1"
   }
 }
