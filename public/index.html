@@ -26,12 +26,21 @@
 		  .progress {
 			  position: relative;
 		  }
+
 		  #taskList {
 			  position: auto;
 		  }
 
-		  taskList .name {
+		  #taskList .name {
 			  width: 100px;
+		  }
+
+		  #taskList .error .ui-progressbar {
+			  background: rgb(116, 77, 77);
+		  }
+
+		  #taskList .error .ui-progressbar-value {
+			  background: rgb(206, 121, 121);
 		  }
 		</style>
 	</head>
@@ -41,7 +50,7 @@
 		<ul id="taskList">
 		</ul>
 		<script id="taskTemplate" type="text/template">
-			<li id="<%=name%>">
+			<li id="<%=id%>">
 				<span class="span2 name"><%=name%></span>
 				<span class="span6 progress" />
 			</li>

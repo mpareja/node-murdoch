@@ -3,10 +3,11 @@ var JSONStream = require('JSONStream');
 var taskTemplate = _.template($("#taskTemplate").html());
 var $taskList = $('#taskList');
 
-var _completed, _deps, _tasks;
+var _completed, _errored, _deps, _tasks;
 var murdoch = module.exports = {
   initialize: function (plan) {
     _completed = {};
+    _errored = [];
     _deps = deppy.create();
 
     // populate dependency graph
@@ -27,6 +28,10 @@ var murdoch = module.exports = {
   complete: function (task) {
     _completed[task] = true;
     updateProgress();
+  },
+  error: function (task) {
+    _errored.push(task);
+    updateProgress();
   }
 };
 
@@ -34,7 +39,7 @@ function renderAllTasks() {
   // render tasks
   var tasksHtml = _tasks.map(function (task) {
     var name = camelToWords(task);
-    return taskTemplate({name: name});
+    return taskTemplate({id: task, name: name});
   }).join();
 
   $taskList.html('');
@@ -58,6 +63,9 @@ function updateProgress() {
       }
     });
   }
+  _errored.forEach(function (task) {
+    $('#' + task).addClass('error');
+  });
 }
 
 function camelToWords(camel) {
@@ -77,6 +85,10 @@ function camelToWords(camel) {
 
   rupert.on('taskComplete', function (task) {
     murdoch.complete(task);
+  });
+
+  rupert.on('taskFail', function (err) {
+    murdoch.error(err.task);
   });
 }());
 
